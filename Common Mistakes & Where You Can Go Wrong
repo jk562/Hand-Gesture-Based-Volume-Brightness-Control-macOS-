@@ -1,0 +1,47 @@
+❗ 1. MediaPipe Import Error
+
+Error:
+AttributeError: module 'mediapipe' has no attribute 'solutions'
+Fix:
+Use direct imports (already handled in this code).
+
+❗ 2. No Camera Permission
+Symptom: Webcam does not open
+Fix:
+Enable Camera access for Terminal/Python.
+
+❗ 3. Volume Not Changing
+Cause: Missing Accessibility permission
+Fix:
+System Settings → Privacy & Security → Accessibility → Enable Python
+
+❗ 4. Flickering / Unstable Control
+Cause: No smoothing
+Fix: Adjust mapping range:
+np.interp(distance, [60, 180], [0, 100])
+
+❗ 5. Wrong Hand Detected
+Cause: Mirroring confusion
+Fix:
+Keep cv2.flip(img, 1) enabled.
+
+🔮 Future Improvements
+Gesture smoothing filter
+Lock / unlock gesture
+Background macOS service
+Multi-monitor brightness control
+GUI or menu-bar app
+
+Custom gestures (mute, max brightness)
+
+👤 Author
+J. Kailash Ram
+MSc Robotics & Artificial Intelligence
+Robotics | Computer Vision | Embedded Systems
+
+⭐ Why This Project Matters
+This project demonstrates:
+Human–Computer Interaction
+Computer Vision fundamentals
+Real-time control systems
+macOS system integration
