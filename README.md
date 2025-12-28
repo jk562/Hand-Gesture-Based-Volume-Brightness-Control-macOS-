@@ -42,9 +42,13 @@ Screen Brightness Control
 📁 Project Structure
 
 gesture-control/
+
 │
+
 ├── gesture_control.py
+
 ├── README.md
+
 └── requirements.txt
 
 ⚙️ Installation & Setup (Step-by-Step)
