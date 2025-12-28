@@ -1,0 +1,73 @@
+import cv2
+import numpy as np
+import math
+import subprocess
+import screen_brightness_control as sbc
+
+from mediapipe.python.solutions.hands import Hands
+from mediapipe.python.solutions.drawing_utils import draw_landmarks
+from mediapipe.python.solutions.hands import HAND_CONNECTIONS
+
+hands = Hands(
+    static_image_mode=False,
+    max_num_hands=2,
+    min_detection_confidence=0.7,
+    min_tracking_confidence=0.7
+)
+
+cap = cv2.VideoCapture(0)
+
+def set_volume(level):
+    level = int(np.clip(level, 0, 100))
+    subprocess.call([
+        "osascript",
+        "-e",
+        f"set volume output volume {level}"
+    ])
+
+while True:
+    success, img = cap.read()
+    if not success:
+        break
+
+    img = cv2.flip(img, 1)
+    h, w, _ = img.shape
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    results = hands.process(img_rgb)
+
+    if results.multi_hand_landmarks and results.multi_handedness:
+        for hand_landmarks, hand_info in zip(
+            results.multi_hand_landmarks,
+            results.multi_handedness
+        ):
+            lm = hand_landmarks.landmark
+
+            x1, y1 = int(lm[4].x * w), int(lm[4].y * h)
+            x2, y2 = int(lm[8].x * w), int(lm[8].y * h)
+
+            distance = math.hypot(x2 - x1, y2 - y1)
+            value = np.interp(distance, [40, 200], [0, 100])
+
+            hand_label = hand_info.classification[0].label
+
+            if hand_label == "Left":
+                set_volume(value)
+                cv2.putText(img, f"Volume: {int(value)}%",
+                            (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            (0, 255, 0), 2)
+
+            elif hand_label == "Right":
+                sbc.set_brightness(int(value))
+                cv2.putText(img, f"Brightness: {int(value)}%",
+                            (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            (255, 255, 0), 2)
+
+            draw_landmarks(img, hand_landmarks, HAND_CONNECTIONS)
+
+    cv2.imshow("Gesture Control", img)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
