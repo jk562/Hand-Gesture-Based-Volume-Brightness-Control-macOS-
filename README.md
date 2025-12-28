@@ -41,13 +41,11 @@ Screen Brightness Control
 
 📁 Project Structure
 
-gesture-control/
-│
-├── gesture_control.py
-├── README.md
-└── requirements.txt
+gesture-control/ ->  gesture_control.py -> README.md -> requirements.txt
+
 
 ⚙️ Installation & Setup (Step-by-Step)
+
 1️⃣ Check Python Version
 python3 --version
 
